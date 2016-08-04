@@ -5,17 +5,22 @@ const staticModule = require('static-module')
 
 module.exports = function transform (file, options) {
 	if (path.extname(file) !== '.js') {
-		console.log('skipping', file)
 		return through()
 	}
 
-	const dirName = path.dirname(file)
+	// This seems to happen when the assetify plugin isn't
+	// used. Not sure why really...
+	if (!options._flags) {
+		return through()
+	}
 
 	const callback = options._flags._assetCallback
 
 	if (typeof callback !== 'function') {
 		console.warn('assetify used but not initialized', file)
 	}
+
+	const dirName = path.dirname(file)
 
 	const stream = staticModule({
 		asset: {
