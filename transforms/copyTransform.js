@@ -18,7 +18,7 @@ module.exports = function assetTransform (outputDir, baseUrl) {
 				return url
 			},
 			() => {
-				console.log('DONE', filesToCopy)
+				//console.log('DONE', filesToCopy)
 				for (let from in filesToCopy) {
 					const to = filesToCopy[from]
 					fs.copy(from, to)
