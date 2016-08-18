@@ -28,7 +28,8 @@ module.exports = function transform (file, options) {
 				filePath = path.resolve(dirName, filePath)
 
 				if (callback) {
-					return quote(callback(filePath))
+					const newString = callback(filePath)
+					return quote(newString)
 				} else {
 					return 'undefined'
 				}

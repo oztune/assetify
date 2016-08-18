@@ -4,13 +4,15 @@ module.exports = function (callback) {
 	return function (bundle, options) {
 		let onFile
 
-		bundle._mdeps.options._assetCallback = function () {
+		function assetCallback () {
 			if (onFile) {
 				return onFile.apply(null, arguments)
 			}
 		}
 
 		bundle.on('bundle', stream => {
+			bundle._mdeps.options._assetCallback = assetCallback
+
 			const value = callback()
 
 			onFile = null
