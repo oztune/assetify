@@ -1,7 +1,9 @@
 'use strict'
 
 const path = require('path')
-const fs = require('fs-promise')
+const fs = require('fs-extra')
+
+console.log('Transform imported')
 
 module.exports = function assetTransform (outputDir, baseUrl) {
 	const template = createTemplate({ baseUrl, md5: true })
@@ -18,10 +20,25 @@ module.exports = function assetTransform (outputDir, baseUrl) {
 				return url
 			},
 			() => {
-				//console.log('DONE', filesToCopy)
+				// console.log('DONE', filesToCopy)
 				for (let from in filesToCopy) {
 					const to = filesToCopy[from]
-					fs.copy(from, to)
+
+					fs.pathExists(to)
+						.then(exists => {
+							if (!exists) {
+								return fs.copy(from, to)
+									.then(() => {
+										console.log('Copied file ', to)
+									})
+							} else {
+								console.log('File already exists', to)
+							}
+						})
+						.catch(e => {
+							console.error('Error copying ' + from, e)
+						})
+					// fs.copy(from, to)
 					// fs.createReadStream(from).pipe(fs.createWriteStream(to))
 				}
 			}
