@@ -3,8 +3,6 @@
 const path = require('path')
 const fs = require('fs-extra')
 
-console.log('Transform imported')
-
 module.exports = function assetTransform (outputDir, baseUrl) {
 	const template = createTemplate({ baseUrl, md5: true })
 
@@ -20,6 +18,11 @@ module.exports = function assetTransform (outputDir, baseUrl) {
 				return url
 			},
 			() => {
+				// NOTE: I'm not really sure this works... May need more testing.
+				//
+				// I can imagine a scenario where one processes checks for existence
+				// but the other one _just_ started copying, so it'll get back false.
+				//
 				// console.log('DONE', filesToCopy)
 				for (let from in filesToCopy) {
 					const to = filesToCopy[from]
@@ -29,17 +32,15 @@ module.exports = function assetTransform (outputDir, baseUrl) {
 							if (!exists) {
 								return fs.copy(from, to)
 									.then(() => {
-										console.log('Copied file ', to)
+										// console.log('Copied file ', to)
 									})
 							} else {
-								console.log('File already exists', to)
+								// console.log('File already exists', to)
 							}
 						})
 						.catch(e => {
-							console.error('Error copying ' + from, e)
+							// console.error('Error copying ' + from, e)
 						})
-					// fs.copy(from, to)
-					// fs.createReadStream(from).pipe(fs.createWriteStream(to))
 				}
 			}
 		]
