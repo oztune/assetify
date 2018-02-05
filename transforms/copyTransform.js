@@ -3,21 +3,26 @@
 const path = require('path')
 const fs = require('fs-extra')
 
-module.exports = function assetTransform (outputDir, baseUrl) {
+module.exports = function assetTransform (outputDir, baseUrl, noCopy) {
 	const template = createTemplate({ baseUrl, md5: true })
+	console.log('start', outputDir, baseUrl, noCopy)
 
 	return () => {
 
-		const filesToCopy = {}
+		const filesToCopy = noCopy ? null : {}
 
 		return [
 			(file) => {
 				const url = template(file)
-				filesToCopy[file] = path.resolve(outputDir, url.split('/').pop())
+
+				if (filesToCopy) {
+					filesToCopy[file] = path.resolve(outputDir, url.split('/').pop())
+				}
 
 				return url
 			},
 			() => {
+				if (!filesToCopy) return
 				// NOTE: I'm not really sure this works... May need more testing.
 				//
 				// I can imagine a scenario where one processes checks for existence
