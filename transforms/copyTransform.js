@@ -5,7 +5,9 @@ const fs = require('fs-extra')
 
 module.exports = function assetTransform (outputDir, baseUrl, noCopy) {
 	const template = createTemplate({ baseUrl, md5: true })
-	console.log('start', outputDir, baseUrl, noCopy)
+	if (process.env.NODE_ENV === 'production') {
+		console.log('start', outputDir, baseUrl, noCopy)
+	}
 
 	return () => {
 
